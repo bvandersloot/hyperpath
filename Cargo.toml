@@ -1,0 +1,8 @@
+[package]
+name = "hyperpath"
+version = "0.1.0"
+authors = ["Benjamin VanderSloot <benvds@umich.edu>"]
+
+[dependencies]
+treebitmap = "0.2"
+clap = {version = "2.27", features = ["yaml"]}

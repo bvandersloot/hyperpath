@@ -1,0 +1,19 @@
+name: hyperpath
+version: "0.1"
+author: benvds <admin@benvds.com>
+about: AS path prediction using the hyperpath algorithm
+args:
+    - bgpdump:
+        short: b
+        long: bgpdump
+        value_name: FILE
+        help: Specify the bgpdump file
+        takes_value: true
+        required: true
+    - asrelations:
+        short: a
+        long: asrelations
+        value_name: FILE
+        help: Specify the AS relations file
+        takes_value: true
+        required: true
