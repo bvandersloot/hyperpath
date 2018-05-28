@@ -5,7 +5,7 @@ use aspath::HyperPath;
 
 use clap::*;
 
-use std::io::{self, BufRead};
+use std::io::{self, BufRead, Write};
 use std::net::Ipv4Addr;
 
 fn main() {
@@ -17,6 +17,7 @@ fn main() {
     path_predictor.read_bgpdump(bgpdump);
     path_predictor.read_as_relations(asrelations);
 
+    io::stderr().write(b"Accepting inputs:\n").unwrap();
     let stdin = io::stdin();
     for line in stdin.lock().lines() {
         let l = line.expect("Failed to read stdin");
