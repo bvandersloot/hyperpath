@@ -5,7 +5,7 @@ use aspath::HyperPath;
 
 use clap::*;
 
-use std::io::{self, BufRead, Write};
+use std::io::{self, BufRead};
 use std::net::Ipv4Addr;
 
 fn main() {
