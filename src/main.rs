@@ -17,7 +17,6 @@ fn main() {
     path_predictor.read_bgpdump(bgpdump);
     path_predictor.read_as_relations(asrelations);
 
-    io::stderr().write(b"Accepting inputs:\n").unwrap();
     let stdin = io::stdin();
     for line in stdin.lock().lines() {
         let l = line.expect("Failed to read stdin");
@@ -25,12 +24,12 @@ fn main() {
         if fields.len() == 2 {
             let source : Ipv4Addr = fields[0].parse().expect("Must be a parsable IP address");
             let destination : Ipv4Addr = fields[1].parse().expect("Must be a parsable IP address");
-            let empty : Vec<u64> = vec![];
+            let empty : Vec<u64> = vec![0];
             let path = path_predictor.path(&source, &destination).unwrap_or(empty);
             let output = path.iter().map(|&x| x.to_string()).collect::<Vec<String>>().join(" ");
             println!("{}", output);
         } else {
-            continue;
+			panic!("Input must have two lines");
         }
     }
 }
