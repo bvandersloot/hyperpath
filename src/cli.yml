@@ -17,3 +17,10 @@ args:
         help: Specify the AS relations file
         takes_value: true
         required: true
+    - servermode:
+        short: p
+        long: servermode
+        value_name: PORT
+        help: run using a network connection to serve path queries
+        takes_value: true
+        required: false
