@@ -99,20 +99,41 @@ impl HyperPath {
         self.relations = Some(result)
     }
 
+    fn likely_as(&self, a: &Ipv4Addr) -> Option<&ASN> {
+        let mut map = HashMap::new();
+        for (_, tree) in self.trees.iter() {
+            if let Some((_, _, path)) = tree.longest_match(*a) {
+                if let Some(last) = path.last() {
+                    *map.entry(last).or_insert(0) += 1;
+                }
+            }
+        }
+        map.into_iter()
+        .max_by_key(|&(_, count)| count)
+        .map(|(val, _)| val)
+    }
+
     pub fn path(&self, a1: &Ipv4Addr, a2: &Ipv4Addr) -> Option<Vec<ASN>> {
         let mut final_path = None;
         let mut final_unvalleyed_path = None;
+        let a1_as = self.likely_as(a1);
+        let a2_as = self.likely_as(a2);
+        if None == a1_as || None == a2_as {
+            return None
+        }
         for (_, tree) in self.trees.iter() {
             if let Some((_, _, path1)) = tree.longest_match(*a1) {
                 if let Some((_, _, path2)) = tree.longest_match(*a2) {
-                    if let Some(path) = build_path(&path1, &path2) {
-                        if self.relations.is_some() && self.valley_free(&path) {
-                            let chooser = choose_shortest_path(path);
-                            final_unvalleyed_path =
-                                final_unvalleyed_path.or(Some(vec![])).map(chooser);
-                        } else {
-                            let chooser = choose_shortest_path(path);
-                            final_path = final_path.or(Some(vec![])).map(chooser);
+                    if path1.last() == a1_as && path2.last() == a2_as {
+                        if let Some(path) = build_path(&path1, &path2) {
+                            if self.relations.is_some() && self.valley_free(&path) {
+                                let chooser = choose_shortest_path(path);
+                                final_unvalleyed_path =
+                                    final_unvalleyed_path.or(Some(vec![])).map(chooser);
+                            } else {
+                                let chooser = choose_shortest_path(path);
+                                final_path = final_path.or(Some(vec![])).map(chooser);
+                            }
                         }
                     }
                 }
